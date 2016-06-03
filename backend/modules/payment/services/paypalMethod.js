@@ -1,0 +1,84 @@
+/* Copyright 2015-2016 PayPal, Inc. */
+"use strict";
+var paypal = require('../../');//WTF IS THIS
+require('../../../configuration/payconfigure');
+
+exports.paypalMethod = function(req,res){
+	var create_payment_json = {
+    "intent": "sale",
+    "payer": {
+        "payment_method": "paypal"
+    },
+    "redirect_urls": {
+        "return_url": "http://google.co.uk/",
+        "cancel_url": "http://youtube.com"
+    },
+    "transactions": [{
+        // "item_list": {
+        //     "items": [{
+        //         "name": "token",
+        //         "sku": "token",
+        //         "price": "100.00",
+        //         "currency": "USD",
+        //         "quantity": 1
+        //     }]
+        // },
+        "amount": {
+            "currency": "USD",
+            "total": "10.00"
+        },
+        "description": "This is the payment description."
+    }]
+};
+
+
+paypal.payment.create(create_payment_json, function (error, payment) {
+    if (error) {
+        throw error;
+    } else {
+        console.log("Create Payment Response");
+        console.log(payment);
+    }
+});
+}
+
+//Response
+// {
+//   "id":"PAY-6RV70583SB702805EKEYSZ6Y",
+//   "create_time":"2013-03-01T22:34:35Z",
+//   "update_time":"2013-03-01T22:34:36Z",
+//   "state":"created",
+//   "intent":"sale",
+//   "payer":{
+//     "payment_method":"paypal"
+//   },
+//   "transactions":[
+//     {
+//       "amount":{
+//         "total":"7.47",
+//         "currency":"USD",
+//         "details":{
+//           "subtotal":"7.47"
+//         }
+//       },
+//       "description":"This is the payment transaction description."
+//     }
+//   ],
+//   "links":[
+//     {
+//       "href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-6RV70583SB702805EKEYSZ6Y",
+//       "rel":"self",
+//       "method":"GET"
+//     },
+//     {
+//       "href":"https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=EC-60U79048BN7719609",
+//       "rel":"approval_url",
+//       "method":"REDIRECT"
+//     },
+//     {
+//       "href":"https://api.sandbox.paypal.com/v1/payments/payment/PAY-6RV70583SB702805EKEYSZ6Y/execute",
+//       "rel":"execute",
+//       "method":"POST"
+//     }
+//   ]
+// }
