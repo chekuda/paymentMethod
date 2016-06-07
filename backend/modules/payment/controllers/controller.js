@@ -8,6 +8,6 @@ var listFunctions = express.Router();
 //In case I receive any JSON data
 listFunctions.use(bodyParser.json());
 
-listFunctions.post("/paypalMethod",paypalM.paypalMethod);//Login function
+listFunctions.get("/paypalMethod",paypalM.paypalMethod);//Login function
 
 exports.listFunctions = listFunctions;
