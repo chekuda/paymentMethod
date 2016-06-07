@@ -1,90 +1,145 @@
-<div class="col-xs-12 col-md-12" ng-controller="paymentMethod">
+<div class="paypalPayment" ng-controller="paymentMethod">
         
-        <button class="btn btn-primary" ng-click="paypalPayment()">PayPal</button>
-        <div ng-if="displayAlert == success" class="alert alert-success">
-          <strong>Payment success</strong>
-        </div>
-         <div ng-if="displayAlert == fail" class="alert alert-danger">
-          <strong>Payment success</strong>
-        </div>
-        
-            <!-- CREDIT CARD FORM STARTS HERE -->
-            <!-- <div class="panel panel-default credit-card-box col-md-4">
-                <div class="panel-heading display-table" >
-                    <div class="row display-tr" >
-                        <h3 class="panel-title display-td" >Payment Details</h3>
-                        <div class="display-td" >                            
-                            <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
-                        </div>
-                    </div>                    
+    <!-- CREDIT CARD FORM STARTS HERE -->
+
+    <div class="panel panel-default credit-card-box">
+        <div class="panel-heading display-table" >
+            <div class="row display-tr" >
+                <h3 class="panel-title display-td" >Payment Details</h3>
+                <div class="display-td" >                            
+                    <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
                 </div>
-                <div class="panel-body">
-                    <form role="form" id="payment-form">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="cardNumber">CARD NUMBER</label>
-                                    <div class="input-group">
-                                        <input 
-                                            type="tel"
-                                            class="form-control"
-                                            name="cardNumber"
-                                            placeholder="Valid Card Number"
-                                            autocomplete="cc-number"
-                                            required autofocus 
-                                        />
-                                        <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
-                                    </div>
-                                </div>                            
+            </div>                    
+        </div>
+        <div class="panel-body">
+            <form role="form" id="payment-form">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="couponCode">TYPE OF CARD</label>
+                            <select class="form-control" id="creditCardType" ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.type">
+                                <option value="visa">Visa</option>
+                                <option value="mastercard">MasterCard</option>
+                                <option value="discover">Discover</option>
+                                <option value="amex">Amex</option>
+                                <option value="jcb">JCB</option>
+                                <option value="maestro">Maestro</option>
+                            </select>
+                        </div>
+                    </div>                        
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="cardNumber">HOLDER NAME</label>
+                            <div class="input-group">
+                                <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.first_name"
+                                    type="tel"
+                                    class="form-control"
+                                    name="holdername"
+                                    placeholder="First Name"
+                                    autocomplete="cc-number"
+                                    required autofocus 
+                                />
+                                <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
+                                 <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.last_name"
+                                    type="tel"
+                                    class="form-control"
+                                    name="lastname"
+                                    placeholder="Last Name"
+                                    autocomplete="cc-number"
+                                    required autofocus 
+                                />
+                                <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-xs-7 col-md-7">
-                                <div class="form-group">
-                                    <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
-                                    <input 
-                                        type="tel" 
-                                        class="form-control" 
-                                        name="cardExpiry"
-                                        placeholder="MM / YY"
-                                        autocomplete="cc-exp"
-                                        required 
-                                    />
-                                </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="cardNumber">CARD NUMBER</label>
+                            <div class="input-group">
+                                <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.number"
+                                    type="tel"
+                                    class="form-control"
+                                    name="cardNumber"
+                                    placeholder="Valid Card Number"
+                                    autocomplete="cc-number"
+                                    required autofocus 
+                                />
+                                <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
                             </div>
-                            <div class="col-xs-5 col-md-5 pull-right">
-                                <div class="form-group">
-                                    <label for="cardCVC">CV CODE</label>
-                                    <input 
-                                        type="tel" 
-                                        class="form-control"
-                                        name="cardCVC"
-                                        placeholder="CVC"
-                                        autocomplete="cc-csc"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                        </div>                            
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-7 col-md-7">
+                        <label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label>
+                        <div class="form-group col-xs-6" style="padding-left:0px; padding-right:0px;">
+                            <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.expire_month"
+                                type="tel" 
+                                class="form-control" 
+                                name="cardExpiryMonth"
+                                placeholder="MM"
+                                autocomplete="cc-exp"
+                                required 
+                            />
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    <label for="couponCode">COUPON CODE</label>
-                                    <input type="text" class="form-control" name="couponCode" />
-                                </div>
-                            </div>                        
+                        <div class="form-group col-xs-6" style="padding-left:0px;padding-right:0px;">
+                            <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.expire_year"
+                                type="tel" 
+                                class="form-control" 
+                                name="cardExpiryYear"
+                                placeholder="YY"
+                                autocomplete="cc-exp"
+                                required 
+                            />
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-success btn-lg btn-block" type="submit">Submit Payment</button>
-                            </div>
+                    </div>
+                    <div class="col-xs-5 col-md-5 pull-right">
+                        <div class="form-group">
+                            <label for="cardCVC">CV CODE</label>
+                            <input ng-model="paypalCreditCardSale.payer.funding_instruments[0].credit_card.cvv2"
+                                type="tel" 
+                                class="form-control"
+                                name="cardCVC"
+                                placeholder="CVC"
+                                autocomplete="cc-csc"
+                                required
+                            />
                         </div>
-                        <div class="row" style="display:none;">
-                            <div class="col-xs-12">
-                                <p class="payment-errors"></p>
-                            </div>
-                        </div>
-                    </form>
-                </div> -->
-            </div>            
-            <!-- CREDIT CARD FORM ENDS HERE -->
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-success btn-lg btn-block" ng-click="paypalPayment('creditCard')">Submit Payment</button>
+                    </div>
+                </div>
+                <div class="row" style="display:none;">
+                    <div class="col-xs-12">
+                        <p class="payment-errors"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div><!-- CREDIT CARD FORM ENDS HERE -->
+    <!--PAYPAL PAY STARTS HERE-->
+    <div class="paypalPart">
+        <div class="paypalelement">-OR-</div>
+        <div class="paypalelement">
+            <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" id="paypalButton" ng-click="paypalPayment('paypal')">
+        </div>
+    </div>
+    <!--PAYPAL PAY ENDS HERE-->
+    <div ng-if="displayAlert == success" class="alert alert-success">
+      <strong>Payment success</strong>
+    </div>
+     <div ng-if="displayAlert == fail" class="alert alert-danger">
+      <strong>Payment success</strong>
+    </div>
+ </div>           
+   
+                    
+            
