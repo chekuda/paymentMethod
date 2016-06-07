@@ -1,54 +1,7 @@
 angular.module('paymentCtr',[]).
 controller('paymentMethod', function($scope,$http,$window) {
 
-
-	/*******************************
-		Check if the payment have been aprroved or not
-		#By the post information throught paypal into the URL
-	********************************/
-
-	$scope.checkifApprovedByPaypal = function(){
-
-		if(location.search)
-		{
-
-			$scope.paymentByURL = location.search.match(/PAY.\w+/);
-			$scope.tokenByURL = localStorage.getItem("tokenPaypal");//location.search.match(/EC.\w+/);
-			$scope.payerByURL = location.search.match(/\w+\w$/);
-			
-			if($scope.paymentByURL && $scope.tokenByURL && $scope.payerByURL){
-				//@paymentId payerByURL[0]
-
-					$http({
-			        url: 'https://api.sandbox.paypal.com/v1/payments/payment/'+$scope.paymentByURL[0]+'/execute/',
-			        method: 'POST',
-			        headers: {
-			        		 'Accept': 'application/json',
-			    			 'Content-Type': 'application/json',
-			                 'Authorization': 'Bearer ' + $scope.tokenByURL//Credentials for get the token
-			                  },
-			        data: JSON.stringify({payer_id: $scope.payerByURL[0]})
-			    	})
-					.success(function (data, status, headers, config){
-						console.log("PAYMENT SUCCESS>>>>>>>>>>"+data);
-					})
-					.error(function(err){
-						console.log(err.name+" : DebugID"+err.debug_id);
-					})
-
-			}
-			else{
-				console.log(">>>>>>>>>>>>>>>Error: Couldn't get the paymentId from URL");
-			}
-		}
-		else{
-			console.log(">>>>>>>>>>>>>>>Checkout page not approved yet");
-		}
-	}()
-
-  /******************************
-		Payment by paypal
-  ******************************/
+	$scope.displayAlert = false;//var for display if the payment is success
 
   	$scope.token = "";//token variable
 	
@@ -65,12 +18,67 @@ controller('paymentMethod', function($scope,$http,$window) {
       {
         amount:{
           total:"10.00",
-          currency:"USD"
+          currency:"GBP"
         },
         description:"This is the payment transaction description."
       }
     ]
   };
+
+	/*******************************
+		Check if the payment have been aprroved or not
+		#By the post information throught paypal into the URL
+	********************************/
+
+	$scope.checkifApprovedByPaypal = function(){
+
+		if(location.search)
+		{
+
+			$scope.paymentByURL = location.search.match(/PAY.\w+/);
+			$scope.tokenByURL = sessionStorage.getItem("tokenPaypal");//location.search.match(/EC.\w+/);
+			$scope.payerByURL = location.search.match(/\w+\w$/);
+			
+			if($scope.paymentByURL && $scope.tokenByURL && $scope.payerByURL){
+				//@paymentId payerByURL[0]
+
+					$http({
+			        url: 'https://api.sandbox.paypal.com/v1/payments/payment/'+$scope.paymentByURL[0]+'/execute/',
+			        method: 'POST',
+			        headers: {
+			        		 'Accept': 'application/json',
+			    			 'Content-Type': 'application/json',
+			                 'Authorization': 'Bearer ' + $scope.tokenByURL//Credentials for get the token
+			                  },
+			        data: JSON.stringify({payer_id: $scope.payerByURL[0]})
+			    	})
+					.success(function (data, status, headers, config){
+						console.log("PAYMENT SUCCESS>>>>>>>>>>"+data.transactions[0].amount.total data.transactions[0].amount.currency);
+						$scope.displayAlert = "success";
+						//Total->data.transactions[0].amount.total
+						//Currency ->data.transactions[0].amount.currency
+						//Description that I added before ->data.transactions[0].description
+
+					})
+					.error(function(err){
+						console.log(err.name+" : DebugID"+err.debug_id);
+						$scope.displayAlert = "fail";
+					})
+
+			}
+			else{
+				console.log(">>>>>>>>>>>>>>>Error: Couldn't get the paymentId from URL");
+			}
+		}
+		else{
+			console.log(">>>>>>>>>>>>>>>Checkout page not approved yet");
+		}
+	}()
+
+  /******************************
+		Payment by paypal
+  ******************************/
+
 
   $scope.paypalPayment = function(){
 
@@ -94,7 +102,7 @@ controller('paymentMethod', function($scope,$http,$window) {
 		}).success(function (data, status, headers, config) {
             console.log(data);
             $scope.token = data.access_token;//give the token to the $scope variable
-            localStorage.setItem("tokenPaypal", $scope.token);//save the token into the sessionstorage
+            sessionStorage.setItem("tokenPaypal", $scope.token);//save the token into the sessionstorage
              //if I get the token try to make payment
             //@@data.access_token, token to get access
             $http({
