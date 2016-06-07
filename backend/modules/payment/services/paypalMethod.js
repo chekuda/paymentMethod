@@ -1,45 +1,11 @@
 /* Copyright 2015-2016 PayPal, Inc. */
-"use strict";
-var paypal = require('../../');//WTF IS THIS
-require('../../../configuration/payconfigure');
+// "use strict";
+// var paypal = require('../../');//WTF IS THIS
+var secret = require('../../../configuration/payconfigure');
 
 exports.paypalMethod = function(req,res){
-	var create_payment_json = {
-    "intent": "sale",
-    "payer": {
-        "payment_method": "paypal"
-    },
-    "redirect_urls": {
-        "return_url": "http://google.co.uk/",
-        "cancel_url": "http://youtube.com"
-    },
-    "transactions": [{
-        // "item_list": {
-        //     "items": [{
-        //         "name": "token",
-        //         "sku": "token",
-        //         "price": "100.00",
-        //         "currency": "USD",
-        //         "quantity": 1
-        //     }]
-        // },
-        "amount": {
-            "currency": "USD",
-            "total": "10.00"
-        },
-        "description": "This is the payment description."
-    }]
-};
 
-
-paypal.payment.create(create_payment_json, function (error, payment) {
-    if (error) {
-        throw error;
-    } else {
-        console.log("Create Payment Response");
-        console.log(payment);
-    }
-});
+    res.json({msg: "success", cliendSecret: secret});
 }
 
 //Response
