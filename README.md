@@ -11,7 +11,7 @@
 	###Angular
 
 
-#More information
+##More information
 	##Complete a whole payment
 	###1-Get the token for autentication
 	Client_id and Client secret for the token are in the payconfigure.json file.
@@ -23,4 +23,5 @@
 	The response will give the redirect URL for the client
 	###3-Accept the payment
 	The client will go to paypal page and after accept the payment the client will be redirected to the page added before
-	
+	###4-Execute the payment
+	Post to paypal API "https://api.sandbox.paypal.com/v1/payments/payment/paymentID/execute/" to execute the payment and wait for receive the answer from the API
