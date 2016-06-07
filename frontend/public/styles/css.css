@@ -1,0 +1,19 @@
+body{
+	width: 100%;
+	height: 100%;
+}
+.paypalPayment{
+	width: 400px;
+	margin: 0 auto;
+}
+.paypalelement{
+	display:inline-block;
+}
+#paypalButton{
+	margin-right:7px;
+	cursor: pointer;
+}
+.paypalPart{   
+ 	width: 200px;
+    margin: 0 auto;
+}
