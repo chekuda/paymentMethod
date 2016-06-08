@@ -1,13 +1,13 @@
 
 var express = require('express');
 var bodyParser = require("body-parser");
-var paypalM = require("../services/paypalMethod");
+var paypalM = require("../services/getUserId");
 
 var listFunctions = express.Router();
 
 //In case I receive any JSON data
 listFunctions.use(bodyParser.json());
 
-listFunctions.get("/paypalMethod",paypalM.paypalMethod);//Login function
+listFunctions.get("/getUserId",paypalM.getUserId);//Login function
 
 exports.listFunctions = listFunctions;
