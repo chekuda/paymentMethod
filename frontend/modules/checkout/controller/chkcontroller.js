@@ -123,7 +123,7 @@ controller('paymentMethod', function($scope,$http,$window) {
 
   $scope.paypalPayment = function(methodSelected){//passing the value to check which paymentMethod is selected
 
-	$http.get('/api/paypalMethod')
+	$http.get('/api/getUserId')
       .success(function(res){
       	console.log(res.msg);
       	$scope.client_id=res.cliendSecret.client_id;//Add the res value to client_id
