@@ -56,7 +56,7 @@ exports.acceptpaybypaypal = function(req,res){
 		   					res.send("ERROR>>>>>>>>>>Payment Failed>>"+error);
 		   				}
 						  	
-
+		   			})
 		       }
 		       else
 		       {
