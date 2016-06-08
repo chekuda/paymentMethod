@@ -6,6 +6,7 @@ controller('paymentMethod', function($scope,$http,$window) {
     $scope.client_id="";//Id retrieve from backEnd 
     $scope.client_secret="";//Secret retrieved from Backend
     $scope.paymentM = "";//Payment method sent by ngClick from DOM
+    $scope.paymentCreated = "";//Data regarding to the created payment received from backEnd 
 
 	$scope.paypalSale = {//Var for paypal Sale
     intent:"sale",
@@ -67,6 +68,8 @@ controller('paymentMethod', function($scope,$http,$window) {
     ]
   };
 
+
+
 	/*******************************
 		Check if the payment have been aprroved or not
 		#By the post information throught paypal into the URL
@@ -89,7 +92,7 @@ controller('paymentMethod', function($scope,$http,$window) {
 			        method: 'POST',
 			        headers: {
 			        		 'Accept': 'application/json',
-			    			 'Content-Type': 'application/json',
+			    			  'Content-Type': 'application/json',
 			                 'Authorization': 'Bearer ' + $scope.tokenByURL//Credentials for get the token
 			                  },
 			        data: JSON.stringify({payer_id: $scope.payerByURL[0]})
@@ -117,9 +120,45 @@ controller('paymentMethod', function($scope,$http,$window) {
 		}
 	}();
 
-  /******************************
-		Calling the APi for client credentials
-  ******************************/
+  /*******************************
+    Calling the backEnd for Get the token and create a payment
+  ********************************/
+  $scope.createApayment = function()
+  {
+    if(!location.search)
+    {
+      $http({
+          url: '/api/connectPaypal',
+          method: 'POST',
+          data: $scope.paypalSale
+        })
+          .success(function (data)
+            {//Receive the payment created and now I have to redirect
+            console.log(data);
+            sessionStorage.setItem("tokenPaypal", data.tokenPaypal);//save the token into the sessionstorage
+            $scope.paymentCreated = JSON.parse(data.payCreated);//PayCreate need to be parse in order to get all the arguments
+            if($scope.paymentCreated.payer.payment_method == "paypal")
+            {
+              if( $scope.paymentCreated.links[1].method == "REDIRECT")//Only for paypal
+              {
+                window.location = $scope.paymentCreated.links[1].href;
+              }
+              else
+              {
+                console.log("Error: Couldnt redirect to paypal page");
+              }
+            }
+            else if($scope.paymentCreated.payer.payment_method == "credit_card")
+            {
+              console.log("Message>>>>>"+ $scope.paymentCreated);
+            }
+            
+         })
+          .error(function(err){
+            console.log(err);
+          })
+    }
+  }();
 
   $scope.paypalPayment = function(methodSelected){//passing the value to check which paymentMethod is selected
 
@@ -151,8 +190,8 @@ controller('paymentMethod', function($scope,$http,$window) {
         url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
         method: 'POST',
         headers: {
-        		 'Accept': 'application/json',
-    			 'Content-Type': 'application/x-www-form-urlencoded',
+        		      'Accept': 'application/json',
+    			       'Content-Type': 'application/x-www-form-urlencoded',
                  'Authorization': 'Basic ' + btoa($scope.client_id+":"+$scope.client_secret)//Credentials for get the token
                   },
         data: 'grant_type=client_credentials'
@@ -189,32 +228,32 @@ controller('paymentMethod', function($scope,$http,$window) {
     url: 'https://api.sandbox.paypal.com/v1/payments/payment',
     method: 'POST',
     headers: {
-    		 'Accept': 'application/json',
-			 'Content-Type': 'application/json',
-             'Authorization': 'Bearer ' + $scope.token//Token taken for the server
+        		 'Accept': 'application/json',
+    			   'Content-Type': 'application/json',
+                 'Authorization': 'Bearer ' + $scope.token//Token taken for the server
               },
-    data: JSON.stringify($scope.paymentM)//This got the values from the creditCard or payPal
-    })//Information sent as a string to the paypal API
-    .success(function (data, status, headers, config)
-	  {
-	  	console.log(data);
-	  	if(data.payer.payment_method == "paypal")
-	  	{
-	  		if(data.links[1].method == "REDIRECT")//Only for paypal
-		  	{
-		  		window.location = data.links[1].href;
-		  	}
-		  	else
-		  	{
-		  		console.log("Error: Couldnt redirect to paypal page");
-		  	}
-	  	}
-	  	else if(data.payer.payment_method == "credit_card")
-	  	{
-	  		console.log("Message>>>>>"+data);
-	  	}
-	  	
-	 })
+          data: JSON.stringify($scope.paymentM)//This got the values from the creditCard or payPal
+          })//Information sent as a string to the paypal API
+          .success(function (data, status, headers, config)
+      	  {
+      	  	console.log(data);
+      	  	if(data.payer.payment_method == "paypal")
+      	  	{
+      	  		if(data.links[1].method == "REDIRECT")//Only for paypal
+      		  	{
+      		  		window.location = data.links[1].href;
+      		  	}
+      		  	else
+      		  	{
+      		  		console.log("Error: Couldnt redirect to paypal page");
+      		  	}
+      	  	}
+      	  	else if(data.payer.payment_method == "credit_card")
+      	  	{
+      	  		console.log("Message>>>>>"+data);
+      	  	}
+      	  	
+      	 })
 	  .error(function(data){
         console.log("Error: Cant get access with the token >>>>>> "+data);
         console.log($scope.token);
