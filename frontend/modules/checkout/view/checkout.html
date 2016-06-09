@@ -91,7 +91,7 @@
                                 type="tel" 
                                 class="form-control" 
                                 name="cardExpiryYear"
-                                placeholder="YY"
+                                placeholder="YYYY"
                                 autocomplete="cc-exp"
                                 required 
                             />
@@ -105,7 +105,7 @@
                                 class="form-control"
                                 name="cardCVC"
                                 placeholder="CVC"
-                                autocomplete="cc-csc"
+                                autocomplete="off"
                                 required
                             />
                         </div>
@@ -114,7 +114,7 @@
                 
                 <div class="row">
                     <div class="col-xs-12">
-                        <button class="btn btn-success btn-lg btn-block" ng-click="paypalPayment('creditCard')">Submit Payment</button>
+                        <button class="btn btn-success btn-lg btn-block" ng-click="createApayment('creditCard')">Submit Payment</button>
                     </div>
                 </div>
                 <div class="row" style="display:none;">
@@ -129,7 +129,7 @@
     <div class="paypalPart">
         <div class="paypalelement">-OR-</div>
         <div class="paypalelement">
-            <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" id="paypalButton" ng-click="paypalPayment('paypal')">
+            <img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" id="paypalButton" ng-click="createApayment('paypal')">
         </div>
     </div>
     <!--PAYPAL PAY ENDS HERE-->
